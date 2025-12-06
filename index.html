@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Birthday Gift Final</title>
+    <style>
+        /* --- FONT RETRO --- */
+        @font-face {
+            font-family: 'RetroFont';
+            src: url('https://fonts.cdnfonts.com/s/17210/PressStart2P-Regular.woff') format('woff'); 
+        }
+
+        :root {
+            --bg-color: #000;
+            --main-screen: #008000;
+            --accent-green: #38b438;
+            --accent-red: #cc0000;
+            --accent-blue: #0080ff;
+            --font-color: #00ff00;
+            --border-3d-dark: #555;
+        }
+
+        body {
+            font-family: 'RetroFont', monospace;
+            background-color: var(--bg-color);
+            color: var(--font-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* --- SPLASH SCREEN / OVERLAY --- */
+        #splash-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        #start-button {
+            padding: 15px 30px;
+            margin-top: 30px;
+            font-family: 'RetroFont', monospace;
+            background-color: var(--accent-green);
+            color: black;
+            border: 5px solid #000;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 4px 4px 0 #000;
+            animation: blinker-start 1s infinite;
+        }
+
+        @keyframes blinker-start {
+            50% { background-color: #00ff00; }
+        }
+        
+        #start-button:active {
+            box-shadow: 0 0 0 #000;
+            transform: translate(4px, 4px);
+        }
+
+        /* --- FRAME UTAMA --- */
+        #game-device {
+            width: 380px;
+            min-height: 600px;
+            background-color: #1a1a1a;
+            border: 10px solid #555;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .screen-container {
+            background-color: #000;
+            padding: 10px;
+            border: 5px solid var(--border-3d-dark);
+            border-style: inset;
+            margin-bottom: 20px;
+        }
+
+        #main-screen {
+            background-color: var(--main-screen);
+            color: #000;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            text-align: left;
+            font-size: 0.8em;
+            text-shadow: 1px 1px #000000;
+            position: relative;
+        }
+        
+        #main-screen::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(#00000022, #00000022 1px, transparent 1px, transparent 3px);
+            pointer-events: none;
+        }
+
+        /* --- TOMBOL NAVIGASI & Aksi --- */
+        .nav-buttons, .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .nav-buttons { margin-bottom: 15px; }
+
+        .btn-style {
+            font-family: 'RetroFont', monospace;
+            padding: 10px 0;
+            border: 4px solid #000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.7em;
+            box-shadow: 2px 2px 0 #000;
+            transition: all 0.1s;
+        }
+        
+        .nav-button:active, .action-btn:active, .quiz-btn:active {
+            box-shadow: 0 0 0 #000;
+            transform: translate(2px, 2px);
+        }
+
+        /* [GALLERY, QUIZ, MUSIC STYLE TETAP SAMA] */
+        .photobox-item {
+            border: 2px solid var(--accent-red);
+            margin-bottom: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .photobox-item img { width: 100%; height: auto; display: block; }
+        .photobox-caption {
+            background: var(--accent-blue);
+            color: white;
+            padding: 3px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.5em;
+        }
+        
+        .quiz-btn {
+            background-color: #333; color: #00ff00;
+            border: 2px solid #00ff00; margin-bottom: 5px;
+            padding: 5px; cursor: pointer; font-size: 0.7em;
+            text-align: center;
+        }
+        .quiz-btn:hover { background-color: #005500; }
+        .quiz-result {
+            margin-top: 10px; padding: 5px;
+            background-color: #ffcc00; color: black;
+            font-size: 0.6em; text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div style="font-size: 1.5em; color: var(--font-color); margin-bottom: 10px;">
+            START-UP MODE...
+        </div>
+        <div style="font-size: 0.8em; color: #aaa;">
+            Welcome to Birthday Device OS 1998.<br>
+            Please press START to begin loading system data and audio.
+        </div>
+        <button id="start-button" onclick="startSystem()">
+            START GIFT 🎁
+        </button>
+    </div>
+
+
+    <div id="game-device" style="display: none;">
+        <div class="nav-buttons">
+            <button id="btn-message" class="btn-style nav-button" onclick="loadContent('message', this)">MESSAGE</button>
+            <button id="btn-gallery" class="btn-style nav-button" onclick="loadContent('gallery', this)">GALLERY</button>
+            <button id="btn-music" class="btn-style nav-button" onclick="loadContent('music', this)">MUSIC</button>
+            <button id="btn-quiz" class="btn-style nav-button" onclick="loadContent('quiz', this)">QUIZ/PESAN</button> 
+        </div>
+        
+        <div class="screen-container">
+            <div id="main-screen"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="btn-lanjut" class="btn-style action-btn" onclick="nextMessageStep()">SELANJUTNYA</button>
+            <button id="btn-kembali" class="btn-style action-btn" onclick="prevMessageStep()">KEMBALI</button>
+        </div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="lagu_ulang_tahun_utama.mp3" type="audio/mpeg"> 
+    </audio>
+
+    <script>
+        // --- DATA YANG HARUS ANDA UBAH (START) ---
+        
+        const photoData = [
+            { src: "foto_kakak_1.jpg", caption: "PERTAMA: FOTO FAVORIT" },
+            { src: "foto_kita_2.png", caption: "KEDUA: FOTO TAHUN INI" },
+            { src: "foto_keren_3.jpg", caption: "KETIGA: FOTO ALA JEPANG" },
+            { src: "klip_video_4.mp4", caption: "KLIP VIDEO (KLIK UNTUK BUKA)" }
+        ];
+        
+        const musicInfo = {
+            title: "ILYSB (Acoustic Version)", 
+            artist: "LANY"
+        };
+
+        const messageSteps = [
+            { title: "BOOT UP SUCCESS", text: "Selamat ulang tahun, Kak. Semoga kamu selalu sehat dan kerja di Jepang berjalan lancar. Aku tau kamu lagi sibuk banget, tapi semoga hari ini tetap bisa kamu nikmati walau cuma sebentar. ^-^" },
+            { title: "PESAN SYSTEM (2/3)", text: "Dari sini aku cuma mau ngingetin kalau kamu udah ngelakuin yang terbaik. Aku tau kamu tipe yang nggak suka ngerepotin siapa pun, tapi tetap jaga diri ya. Semoga tahun ini kamu dapat suasana yang lebih tenang, kerjaan lebih stabil, dan semuanya dipermudah. Aku dukung kamu!" },
+            { title: "PESAN SYSTEM (FINAL)", text: "Pokoknya aku selalu dukung kamu dari jauh. Semoga umur baru ini bawa banyak hal baik buat kamu. Terus semangat ya, Kak, dan selamat ulang tahun sekali lagi. 🎉💙" }
+        ];
+
+        // --- DATA YANG HARUS ANDA UBAH (END) ---
+
+        
+        let currentStep = 0;
+        const mainScreen = document.getElementById('main-screen');
+        const audioPlayer = document.getElementById('bg-music');
+        const gameDevice = document.getElementById('game-device');
+        const splashScreen = document.getElementById('splash-screen');
+        
+        // --- FUNGSI BARU UNTUK START SYSTEM ---
+        function startSystem() {
+            // 1. Mulai Putar Audio
+            audioPlayer.volume = 0.3;
+            const playPromise = audioPlayer.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Audio berhasil diputar
+                    console.log("Audio started successfully.");
+                }).catch(error => {
+                    // Gagal putar (mungkin format file salah)
+                    console.error("Audio play failed, playing fallback sound or checking format:", error);
+                });
+            }
+            
+            // 2. Hilangkan Splash Screen dan Tampilkan Konsol
+            splashScreen.style.display = 'none';
+            gameDevice.style.display = 'block';
+            
+            // 3. Muat Konten Pertama (Message)
+            loadContent('message', document.getElementById('btn-message'));
+        }
+
+        // [LOGIC SCRIPT LAINNYA TETAP SAMA]
+        
+        function loadContent(tabName, elmnt) {
+            // ... (Kode logic loadContent)
+            // Saya singkat untuk menjaga fokus pada solusi utama
+            mainScreen.innerHTML = ''; 
+            document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+            if (elmnt) elmnt.classList.add('active');
+            
+            document.getElementById('btn-lanjut').style.display = 'none';
+            document.getElementById('btn-kembali').style.display = 'none';
+
+            if (tabName === 'message') {
+                currentStep = 0;
+                displayMessageStep();
+                document.getElementById('btn-lanjut').style.display = 'block';
+                document.getElementById('btn-kembali').style.display = 'block';
+            } else if (tabName === 'gallery') {
+                displayGallery();
+            } else if (tabName === 'music') {
+                displayMusicPlayer();
+            } else if (tabName === 'quiz') {
+                displayQuiz();
+            }
+        }
+
+        function displayMessageStep() {
+            const step = messageSteps[currentStep];
+            mainScreen.innerHTML = `<div id="message-title" style="color:#00ff00; font-size:0.9em; margin-bottom:10px;">${step.title}</div><div id="typewriter-output"></div>`;
+            document.getElementById('btn-lanjut').style.display = (currentStep < messageSteps.length - 1) ? 'block' : 'none';
+            document.getElementById('btn-kembali').style.display = (currentStep > 0) ? 'block' : 'none';
+            typeWriter(step.text, 0, document.getElementById('typewriter-output'));
+        }
+
+        function nextMessageStep() {
+            if (currentStep < messageSteps.length - 1) { currentStep++; displayMessageStep(); }
+        }
+
+        function prevMessageStep() {
+            if (currentStep > 0) { currentStep--; displayMessageStep(); }
+        }
+
+        function typeWriter(text, i, targetElement) {
+            if (i < text.length) {
+                targetElement.innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
+                setTimeout(() => typeWriter(text, i + 1, targetElement), 30);
+            }
+        }
+        
+        function displayGallery() {
+            let galleryHTML = `<div style="text-align:center; color:#00ff00;">GALLERY HEYTML-PHOTOBOX</div>
+                               <div style="height:10px; border-bottom:1px solid #00ff00; margin: 10px 0;"></div>`;
+            
+            photoData.forEach((photo, index) => {
+                const isVideo = photo.src.toLowerCase().endsWith('.mp4');
+                const onClickAction = isVideo ? `onclick="window.open('${photo.src}', '_blank')" style="cursor: pointer; background: var(--accent-red); color: white;"` : '';
+                
+                galleryHTML += `
+                    <div class="photobox-item" ${onClickAction}>
+                        ${isVideo ? 
+                            `<div style="padding: 10px; font-size: 0.8em;">MEMUTAR KLIP VIDEO (${index + 1}/${photoData.length})</div>` : 
+                            `<img src="${photo.src}" alt="${photo.caption}">`
+                        }
+                        <div class="photobox-caption">${photo.caption}</div>
+                    </div>
+                `;
+            });
+
+            mainScreen.innerHTML = galleryHTML;
+        }
+
+        function displayMusicPlayer() {
+            mainScreen.innerHTML = `
+                <div style="text-align:center; color:#00ff00;">MUSIC PLAYER 🎧</div>
+                <div style="height:10px; border-bottom:1px solid #00ff00; margin: 10px 0;"></div>
+                
+                <div style="text-align:center; margin-top:20px; font-size:0.7em;">
+                    <p style="color:white; font-size:1em;">${musicInfo.title}</p>
+                    <p style="color:var(--accent-green);">${musicInfo.artist}</p>
+                </div>
+
+                <div style="text-align:center; margin-top:20px;">
+                    <div style="width:80%; height:5px; background:#444; border:1px solid #00ff00; margin: 0 auto;">
+                        <div style="width:100%; height:100%; background:var(--accent-green); animation: music-progress 5s infinite linear;"></div>
+                    </div>
+                    <p style="font-size:0.5em; margin-top:5px;">PLAYING / LOOP</p>
+                </div>
+                
+                <div style="text-align:left; margin-top:20px; font-size:0.6em;">
+                    <p style="color:#00ff00;">STATUS:</p>
+                    <p>- Lagu merdu berjalan setelah tombol START ditekan.</p>
+                </div>
+            `;
+            const style = document.createElement('style');
+            style.innerHTML = `@keyframes music-progress { 0% {width: 0%;} 100% {width: 100%;} }`;
+            document.head.appendChild(style);
+        }
+
+        function displayQuiz() {
+            mainScreen.innerHTML = `
+                <div style="text-align:center; color:#00ff00;">SELAMAT ULANG TAHUN!</div>
+                <div style="height:10px; border-bottom:1px solid #00ff00; margin: 10px 0;"></div>
+                
+                <div style="font-size:0.9em; margin-bottom:10px;">[PERTANYAAN KHUSUS]</div>
+                <p style="font-size:0.7em; margin-bottom:15px;">Pilih satu hal yang ingin kamu fokuskan di umur ini:</p>
+
+                <button class="quiz-btn" onclick="showQuizResult('A')">A. Lebih fokus pada diri sendiri (Self-Care)</button>
+                <button class="quiz-btn" onclick="showQuizResult('B')">B. Cari pengalaman baru di Jepang (Adventure)</button>
+                <button class="quiz-btn" onclick="showQuizResult('C')">C. Lebih sering video call sama aku! XD</button>
+                
+                <div id="quiz-result" class="quiz-result" style="display:none;"></div>
+            `;
+        }
+        
+        function showQuizResult(choice) {
+            const resultDiv = document.getElementById('quiz-result');
+            let message = '';
+
+            if (choice === 'A') {
+                message = '[SYSTEM ACCEPTED] Fokus diri sendiri adalah investasi terbaik! Semoga kamu makin bahagia.';
+            } else if (choice === 'B') {
+                message = '[SYSTEM ACCEPTED] Ambil risiko, bikin kenangan baru, aku tunggu cerita lucunya!';
+            } else if (choice === 'C') {
+                message = '[SYSTEM CONFIRMED] AKU TUNGGU BANGET! Semoga sinyal selalu lancar ya! Hehe. <3';
+            }
+            
+            resultDiv.innerHTML = message;
+            resultDiv.style.display = 'block';
+        }
+
+        // INIT: Jangan jalankan sistem, biarkan Splash Screen muncul.
+        // document.addEventListener('DOMContentLoaded', () => {
+        //     // loadContent('message', document.getElementById('btn-message')); // Dihapus, diganti dengan startSystem
+        // });
+    </script>
+
+</body>
+</html>
